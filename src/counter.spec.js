@@ -23,5 +23,32 @@ describe('reducer', () => {
             const state = store.getState();
             expect(state.count).toEqual(0);
         });
+        
+        it('should dispatch actions and update the state', () => {
+            const action1=increaseCount();
+            const action3=increaseCount(3);
+            store.dispatch(action1);
+            expect(store.getState().count).toEqual(1);
+            store.dispatch(action3);
+            expect(store.getState().count).toEqual(4);
+        })
+
+        it('should call the suscribers when the state data change', ()=>{
+            const listener=jest.fn();
+            store.subscribe(listener);
+            const action=increaseCount();
+            store.dispatch(action);
+            expect(listener).toHaveBeenCalled();
+        });
+
+        it('should not call the unsuscribed listeners when the state data change', ()=>{
+            const listener=jest.fn();
+            const unsubscribe = store.subscribe(listener);
+            const action=increaseCount();
+            unsubscribe();
+            store.dispatch(action);
+            expect(listener).not.toHaveBeenCalled();
+        });
+
     });
 });
